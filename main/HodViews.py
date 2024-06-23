@@ -1,48 +1,283 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib import messages
-from django.core.files.storage import FileSystemStorage  # To upload Profile Picture
+from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
-from main.models import CustomUser, Students
-from .forms import AddStudentForm, EditStudentForm
-
+from main.models import CustomUser, Customer, Energy, Transaction, ProducerCategory
+from .forms import AddCustomerForm, EditCustomerForm, AddEnergyForm, EditEnergyForm, AddProducerCategoryForm, EditProducerCategoryForm, AddTransactionForm, EditTransactionForm
 
 def admin_home(request):
-    all_student_count = Students.objects.all().count()
+    all_customer_count = Customer.objects.all().count()
+    all_energy_count = Energy.objects.all().count()
+    all_transaction_count = Transaction.objects.all().count()
     
-    # For Students
-    student_attendance_present_list = []
-    student_name_list = []
-
-    students = Students.objects.all()
-    for student in students:
-        student_name_list.append(student.admin.first_name)
+    customer_name_list = []
+    customers = Customer.objects.all()
+    for customer in customers:
+        customer_name_list.append(customer.user.first_name)
 
     context = {
-        "all_student_count": all_student_count,
-        "student_name_list": student_name_list,
+        "all_customer_count": all_customer_count,
+        "all_energy_count": all_energy_count,
+        "all_transaction_count": all_transaction_count,
+        "customer_name_list": customer_name_list,
     }
     return render(request, "hod_template/home_content.html", context)
 
-
-def add_student(request):
-    form = AddStudentForm()
+def manage_energy(request):
+    energies = Energy.objects.all()
     context = {
-        'form': form,
-        'gender_list': form.fields['gender'].choices,  # Pass gender choices to the template
+        "energies": energies
     }
-    return render(request, 'hod_template/add_student_template.html', context)
+    return render(request, 'hod_template/manage_energy_template.html', context)
 
+def add_energy(request):
+    form = AddEnergyForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'hod_template/add_energy_template.html', context)
 
-def add_student_save(request):
+def add_energy_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
-        return redirect('add_student')
+        return redirect('add_energy')
     else:
-        form = AddStudentForm(request.POST, request.FILES)
+        form = AddEnergyForm(request.POST)
+
+        if form.is_valid():
+            type = form.cleaned_data['type']
+            capacity = form.cleaned_data['capacity']
+            available_units = form.cleaned_data['available_units']
+            cost_per_unit = form.cleaned_data['cost_per_unit']
+            producer = form.cleaned_data['producer']
+
+            try:
+                energy = Energy(
+                    type=type,
+                    capacity=capacity,
+                    available_units=available_units,
+                    cost_per_unit=cost_per_unit,
+                    producer=producer
+                )
+                energy.save()
+
+                messages.success(request, "Energy Added Successfully!")
+                return redirect('add_energy')
+            except Exception as e:
+                messages.error(request, f"Failed to Add Energy: {e}")
+                return redirect('add_energy')
+        else:
+            messages.error(request, "Form is not valid")
+            return redirect('add_energy')
+
+def edit_energy(request, energy_id):
+    energy = get_object_or_404(Energy, id=energy_id)
+    form = EditEnergyForm(instance=energy)
+    context = {
+        "form": form,
+        "id": energy_id,
+    }
+    return render(request, "hod_template/edit_energy_template.html", context)
+
+def edit_energy_save(request):
+    if request.method != "POST":
+        return HttpResponse("Invalid Method!")
+    else:
+        energy_id = request.POST.get('energy_id')
+        energy = get_object_or_404(Energy, id=energy_id)
+
+        form = EditEnergyForm(request.POST, instance=energy)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Energy Updated Successfully!")
+            return redirect('/edit_energy/'+str(energy_id))
+        else:
+            messages.error(request, "Form is not valid")
+            return redirect('/edit_energy/'+str(energy_id))
+
+def delete_energy(request, energy_id):
+    energy = get_object_or_404(Energy, id=energy_id)
+    try:
+        energy.delete()
+        messages.success(request, "Energy Deleted Successfully.")
+        return redirect('manage_energy')
+    except Exception as e:
+        messages.error(request, f"Failed to Delete Energy: {e}")
+        return redirect('manage_energy')
+
+def manage_producer_category(request):
+    categories = ProducerCategory.objects.all()
+    context = {
+        "categories": categories
+    }
+    return render(request, 'hod_template/manage_producer_category_template.html', context)
+
+def add_producer_category(request):
+    form = AddProducerCategoryForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'hod_template/add_producer_category_template.html', context)
+
+def add_producer_category_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('add_producer_category')
+    else:
+        form = AddProducerCategoryForm(request.POST)
+
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            description = form.cleaned_data['description']
+
+            try:
+                category = ProducerCategory(
+                    name=name,
+                    description=description
+                )
+                category.save()
+
+                messages.success(request, "Producer Category Added Successfully!")
+                return redirect('add_producer_category')
+            except Exception as e:
+                messages.error(request, f"Failed to Add Producer Category: {e}")
+                return redirect('add_producer_category')
+        else:
+            messages.error(request, "Form is not valid")
+            return redirect('add_producer_category')
+
+def edit_producer_category(request, category_id):
+    category = get_object_or_404(ProducerCategory, id=category_id)
+    form = EditProducerCategoryForm(instance=category)
+    context = {
+        "form": form,
+        "id": category_id,
+    }
+    return render(request, "hod_template/edit_producer_category_template.html", context)
+
+def edit_producer_category_save(request):
+    if request.method != "POST":
+        return HttpResponse("Invalid Method!")
+    else:
+        category_id = request.POST.get('category_id')
+        category = get_object_or_404(ProducerCategory, id=category_id)
+
+        form = EditProducerCategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Producer Category Updated Successfully!")
+            return redirect('/edit_producer_category/'+str(category_id))
+        else:
+            messages.error(request, "Form is not valid")
+            return redirect('/edit_producer_category/'+str(category_id))
+
+def delete_producer_category(request, category_id):
+    category = get_object_or_404(ProducerCategory, id=category_id)
+    try:
+        category.delete()
+        messages.success(request, "Producer Category Deleted Successfully.")
+        return redirect('manage_producer_category')
+    except Exception as e:
+        messages.error(request, f"Failed to Delete Producer: {e}")
+        return redirect('manage_producer_category')
+
+def manage_transaction(request):
+    transactions = Transaction.objects.all()
+    context = {
+        "transactions": transactions
+    }
+    return render(request, 'hod_template/manage_transaction_template.html', context)
+
+def add_transaction(request):
+    form = AddTransactionForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'hod_template/add_transaction_template.html', context)
+
+def add_transaction_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('add_transaction')
+    else:
+        form = AddTransactionForm(request.POST)
+
+        if form.is_valid():
+            consumer = form.cleaned_data['consumer']
+            energy = form.cleaned_data['energy']
+            requested_units = form.cleaned_data['requested_units']
+            total_cost = form.cleaned_data['total_cost']
+
+            try:
+                transaction = Transaction(
+                    consumer=consumer,
+                    energy=energy,
+                    requested_units=requested_units,
+                    total_cost=total_cost
+                )
+                transaction.save()
+
+                messages.success(request, "Transaction Added Successfully!")
+                return redirect('add_transaction')
+            except Exception as e:
+                messages.error(request, f"Failed to Add Transaction: {e}")
+                return redirect('add_transaction')
+        else:
+            messages.error(request, "Form is not valid")
+            return redirect('add_transaction')
+
+def edit_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    form = EditTransactionForm(instance=transaction)
+    context = {
+        "form": form,
+        "id": transaction_id,
+    }
+    return render(request, "hod_template/edit_transaction_template.html", context)
+
+def edit_transaction_save(request):
+    if request.method != "POST":
+        return HttpResponse("Invalid Method!")
+    else:
+        transaction_id = request.POST.get('transaction_id')
+        transaction = get_object_or_404(Transaction, id=transaction_id)
+
+        form = EditTransactionForm(request.POST, instance=transaction)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Transaction Updated Successfully!")
+            return redirect('/edit_transaction/'+str(transaction_id))
+        else:
+            messages.error(request, "Form is not valid")
+            return redirect('/edit_transaction/'+str(transaction_id))
+
+def delete_transaction(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    try:
+        transaction.delete()
+        messages.success(request, "Transaction Deleted Successfully.")
+        return redirect('manage_transaction')
+    except Exception as e:
+        messages.error(request, f"Failed to Delete Transaction: {e}")
+        return redirect('manage_transaction')
+
+def add_customer(request):
+    form = AddCustomerForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'hod_template/add_customer_template.html', context)
+
+def add_customer_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('add_customer')
+    else:
+        form = AddCustomerForm(request.POST)
 
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
@@ -50,16 +285,6 @@ def add_student_save(request):
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            address = form.cleaned_data['address']
-            gender = form.cleaned_data['gender']
-
-            if 'profile_pic' in request.FILES:
-                profile_pic = request.FILES['profile_pic']
-                fs = FileSystemStorage()
-                filename = fs.save(profile_pic.name, profile_pic)
-                profile_pic_url = fs.url(filename)
-            else:
-                profile_pic_url = None
 
             try:
                 user = CustomUser.objects.create_user(
@@ -68,122 +293,53 @@ def add_student_save(request):
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
-                    user_type=3
+                    user_type=2  # Assuming '2' is for Consumers
                 )
 
-                student_model = Students(
-                    admin=user,
-                    address=address,
-                    gender=gender,
-                    profile_pic=profile_pic_url
-                )
-                student_model.save()
-
-                messages.success(request, "Student Added Successfully!")
-                return redirect('add_student')
+                messages.success(request, "Customer Added Successfully!")
+                return redirect('add_customer')
             except Exception as e:
-                messages.error(request, f"Failed to Add Student: {e}")
-                return redirect('add_student')
+                messages.error(request, f"Failed to Add Customer: {e}")
+                return redirect('add_customer')
         else:
             messages.error(request, "Form is not valid")
-            return redirect('add_student')
+            return redirect('add_customer')
 
-
-def manage_student(request):
-    students = Students.objects.all()
+def manage_customer(request):
+    customers = Customer.objects.all()
     context = {
-        "students": students
+        "customers": customers
     }
-    return render(request, 'hod_template/manage_student_template.html', context)
+    return render(request, 'hod_template/manage_customer_template.html', context)
 
-
-def edit_student(request, student_id):
-    # Adding Student ID into Session Variable
-    request.session['student_id'] = student_id
-
-    student = Students.objects.get(admin=student_id)
-    form = EditStudentForm()
-    # Filling the form with Data from Database
-    form.fields['email'].initial = student.admin.email
-    form.fields['username'].initial = student.admin.username
-    form.fields['first_name'].initial = student.admin.first_name
-    form.fields['last_name'].initial = student.admin.last_name
-    form.fields['address'].initial = student.address
-    form.fields['gender'].initial = student.gender
-
-    context = {
-        "id": student_id,
-        "username": student.admin.username,
-        "form": form
-    }
-    return render(request, "hod_template/edit_student_template.html", context)
-
-
-def edit_student_save(request):
-    if request.method != "POST":
-        return HttpResponse("Invalid Method!")
-    else:
-        student_id = request.session.get('student_id')
-        if not student_id:
-            return redirect('/manage_student')
-
-        form = EditStudentForm(request.POST, request.FILES)
+def edit_customer(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id)
+    form = EditCustomerForm(instance=customer.user)
+    
+    if request.method == 'POST':
+        form = EditCustomerForm(request.POST, instance=customer.user)
         if form.is_valid():
-            email = form.cleaned_data['email']
-            username = form.cleaned_data['username']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            address = form.cleaned_data['address']
-            gender = form.cleaned_data['gender']
-
-            try:
-                # Profile Pic Handling
-                if 'profile_pic' in request.FILES:
-                    profile_pic = request.FILES['profile_pic']
-                    fs = FileSystemStorage()
-                    filename = fs.save(profile_pic.name, profile_pic)
-                    profile_pic_url = fs.url(filename)
-                else:
-                    profile_pic_url = None
-
-                # Update Custom User Model
-                user = CustomUser.objects.get(id=student_id)
-                user.first_name = first_name
-                user.last_name = last_name
-                user.email = email
-                user.username = username
-                user.save()
-
-                # Update Students Table
-                student_model = Students.objects.get(admin=student_id)
-                student_model.address = address
-                student_model.gender = gender
-                if profile_pic_url:
-                    student_model.profile_pic = profile_pic_url
-                student_model.save()
-
-                # Clear session
-                del request.session['student_id']
-
-                messages.success(request, "Student Updated Successfully!")
-                return redirect('/edit_student/'+str(student_id))
-            except Exception as e:
-                messages.error(request, "Failed to Update Student: " + str(e))
-                return redirect('/edit_student/'+str(student_id))
+            form.save()
+            messages.success(request, "Customer Updated Successfully!")
+            return redirect('manage_customer')
         else:
             messages.error(request, "Form is not valid")
-            return redirect('/edit_student/'+str(student_id))
+    
+    context = {
+        "form": form,
+        "id": customer_id,
+        "username": customer.user.username,
+    }
+    return render(request, "hod_template/edit_customer_template.html", context)
 
-
-def delete_student(request, student_id):
-    student = Students.objects.get(admin=student_id)
+def delete_customer(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id)
     try:
-        student.delete()
-        messages.success(request, "Student Deleted Successfully.")
-        return redirect('manage_student')
-    except:
-        messages.error(request, "Failed to Delete Student.")
-        return redirect('manage_student')
+        customer.user.delete()
+        messages.success(request, "Customer Deleted Successfully.")
+    except Exception as e:
+        messages.error(request, f"Failed to Delete Customer: {e}")
+    return redirect('manage_customer')
 
 
 @csrf_exempt
@@ -195,7 +351,6 @@ def check_email_exist(request):
     else:
         return HttpResponse(False)
 
-
 @csrf_exempt
 def check_username_exist(request):
     username = request.POST.get("username")
@@ -205,7 +360,6 @@ def check_username_exist(request):
     else:
         return HttpResponse(False)
 
-
 def admin_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
 
@@ -213,7 +367,6 @@ def admin_profile(request):
         "user": user
     }
     return render(request, 'hod_template/admin_profile.html', context)
-
 
 def admin_profile_update(request):
     if request.method != "POST":
@@ -228,7 +381,7 @@ def admin_profile_update(request):
             customuser = CustomUser.objects.get(id=request.user.id)
             customuser.first_name = first_name
             customuser.last_name = last_name
-            if password != None and password != "":
+            if password and password != "":
                 customuser.set_password(password)
             customuser.save()
             messages.success(request, "Profile Updated Successfully")

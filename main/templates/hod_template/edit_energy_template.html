@@ -1,12 +1,62 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Edit Course | #ID : {{ course.id }}
+    Edit Energy | #ID : {{ course.id }}
 {% endblock page_title %}
 
 {% block main_content %}
 
 {% load static %}
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Edit Energy</h1>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Update Energy Details</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form role="form" action="{% url 'edit_energy_save' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="energy_id" value="{{ id }}">
+              <div class="card-body">
+                {{ form.as_p }}
+              </div>
+              <!-- /.card-body -->
+
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Update</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+{% endblock %}
 
 <section class="content">
         <div class="container-fluid">

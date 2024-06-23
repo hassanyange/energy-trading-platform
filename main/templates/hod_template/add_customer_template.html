@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Add Student
+    Add customer
 {% endblock page_title %}
 
 {% block main_content %}
@@ -14,11 +14,11 @@
                 <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Add Student</h3>
+                        <h3 class="card-title">Add customer</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'add_student_save' %}" enctype="multipart/form-data">
+                    <form role="form" method="POST" action="{% url 'add_customer_save' %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         
                         {% comment %} Display Messages {% endcomment %}
@@ -92,7 +92,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Add Student</button>
+                            <button type="submit" class="btn btn-primary">Add Customer</button>
                         </div>
                     </form>
                 </div>

@@ -5,21 +5,55 @@ class CustomUser(AbstractUser):
     user_type_data = ((1, "HOD"), (2, "Staff"), (3, "Student"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
 
-
 class AdminHOD(models.Model):
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Students(models.Model):
-    GENDER_CHOICES = [
-        ('Male', 'Male'),
-        ('Female', 'Female'),
-    ]
 
-    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    gender = models.CharField(max_length=6, choices=GENDER_CHOICES)
-    profile_pic = models.FileField()
-    address = models.TextField()
+class Customer(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    user_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class Company(models.Model):
+    name = models.CharField(max_length=255)
+    address = models.TextField()
+    contact_email = models.EmailField()
+    contact_phone = models.CharField(max_length=15)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class ProducerCategory(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Producer(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    category = models.ForeignKey(ProducerCategory, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class Energy(models.Model):
+    producer = models.ForeignKey(Producer, on_delete=models.CASCADE)
+    type = models.CharField(max_length=50)  # e.g., Solar, Wind, Biomass
+    capacity = models.FloatField()  # in kWh
+    available_units = models.FloatField()  # in kWh
+    cost_per_unit = models.DecimalField(max_digits=10, decimal_places=2)  # in bitcoins
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class Transaction(models.Model):
+    consumer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 2})
+    energy = models.ForeignKey(Energy, on_delete=models.CASCADE)
+    requested_units = models.FloatField()  # in kWh
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)  # in bitcoins
+    timestamp = models.DateTimeField(auto_now_add=True)
+

@@ -1,45 +1,87 @@
 {% extends 'hod_template/base_template.html' %}
 
+{% block page_title %}
+    Admin Dashboard
+{% endblock page_title %}
+
 {% block main_content %}
 
 {% load static %}
-
 <section class="content">
-        <div class="container-fluid">
-          <!-- Small boxes (Stat box) -->
-          <div class="row">
-            <div class="col-lg-4 col-6">
-              <!-- small box -->
-              <div class="small-box bg-info">
-                <div class="inner">
-                  <h3>{{ all_student_count }}</h3>
-
-                  <p>Total Students</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="{% url 'manage_student' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-            <!-- ./col -->
-         
-
-      
-            <!-- ./col -->
-            
+  <div class="container-fluid">
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+          <div class="inner">
+            <h3>{{ all_customer_count }}</h3>
+            <p>Total Customers</p>
           </div>
-          <!-- /.row -->
-          
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <a href="{% url 'manage_customer' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+          <div class="inner">
+            <h3>{{ all_energy_count }}</h3>
+            <p>Total Energies</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <a href="{% url 'manage_energy' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+          <div class="inner">
+            <h3>{{ all_transaction_count }}</h3>
+            <p>Total Transactions</p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+          </div>
+          <a href="{% url 'manage_transaction' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+    </div>
+    <!-- /.row -->
 
-       
+    <!-- Customer List -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Customer List</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <ul class="list-group">
+              {% for customer_name in customer_name_list %}
+              <li class="list-group-item">{{ customer_name }}</li>
+              {% empty %}
+              <li class="list-group-item">No customers yet.</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
 
-       
+  </div><!-- /.container-fluid -->
+</section>
 
-
-        </div><!-- /.container-fluid -->
-      </section>
-
-  {% endblock main_content %}
-
-  
+{% endblock main_content %}
