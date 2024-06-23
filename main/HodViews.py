@@ -282,14 +282,13 @@ def add_customer_save(request):
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
-            username = form.cleaned_data['username']
+            user_name = form.cleaned_data['user_name']
             email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+ 
 
             try:
                 user = CustomUser.objects.create_user(
-                    username=username,
-                    password=password,
+                    user_name=user_name,
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
