@@ -17,7 +17,7 @@ def admin_home(request):
     customer_name_list = []
     customers = Customer.objects.all()
     for customer in customers:
-        customer_name_list.append(customer.user.first_name)
+        customer_name_list.append(customer.first_name)
 
     context = {
         "all_customer_count": all_customer_count,

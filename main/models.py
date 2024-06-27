@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
     user_type_data = ((1, "HOD"), (2, "Staff"), (3, "Student"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
+    
 
 class AdminHOD(models.Model):
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -12,7 +13,6 @@ class AdminHOD(models.Model):
 
 
 class Customer(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     user_name = models.CharField(max_length=100)
@@ -36,7 +36,6 @@ class ProducerCategory(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class Producer(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     category = models.ForeignKey(ProducerCategory, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
