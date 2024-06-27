@@ -35,14 +35,9 @@ class ProducerCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Producer(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    category = models.ForeignKey(ProducerCategory, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 class Energy(models.Model):
-    producer = models.ForeignKey(Producer, on_delete=models.CASCADE)
+    producer = models.ForeignKey(ProducerCategory, on_delete=models.CASCADE)
     type = models.CharField(max_length=50)  # e.g., Solar, Wind, Biomass
     capacity = models.FloatField()  # in kWh
     available_units = models.FloatField()  # in kWh

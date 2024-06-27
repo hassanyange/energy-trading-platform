@@ -4,12 +4,11 @@
     Edit Category | #ID : {{ course.id }}
 {% endblock page_title %}
 
-{% block main_content %}
+
 
 {% load static %}
-{% extends 'base.html' %}
 
-{% block content %}
+{% block main_content %}
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
@@ -33,7 +32,7 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form role="form" action="{% url 'edit_category_save' %}" method="POST">
+            <form role="form" action="{% url 'edit_producer_category_save' %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="category_id" value="{{ id }}">
               <div class="card-body">

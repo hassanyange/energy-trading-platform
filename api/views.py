@@ -6,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
-from main.models import Customer, Company, ProducerCategory, Producer, Energy, Transaction
-from .serializers import CustomerSerializer, CompanySerializer, ProducerCategorySerializer, ProducerSerializer, EnergySerializer, TransactionSerializer
+from main.models import Customer, Company, ProducerCategory, Energy, Transaction
+from .serializers import CustomerSerializer, CompanySerializer, ProducerCategorySerializer, EnergySerializer, TransactionSerializer
 
 
 User = get_user_model()
@@ -55,20 +55,14 @@ class CustomerDetailView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user.customer
 
-class CompanyListView(generics.ListCreateAPIView):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-    permission_classes = [IsAuthenticated]
+
 
 class ProducerCategoryListView(generics.ListCreateAPIView):
     queryset = ProducerCategory.objects.all()
     serializer_class = ProducerCategorySerializer
     permission_classes = [IsAuthenticated]
 
-class ProducerListView(generics.ListCreateAPIView):
-    queryset = Producer.objects.all()
-    serializer_class = ProducerSerializer
-    permission_classes = [IsAuthenticated]
+
 
 class EnergyListView(generics.ListCreateAPIView):
     queryset = Energy.objects.all()

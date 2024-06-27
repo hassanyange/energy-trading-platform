@@ -40,3 +40,4 @@ class EditTransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ('consumer', 'energy', 'requested_units', 'total_cost')
+    

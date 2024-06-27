@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
 from main.models import CustomUser, Customer, Energy, Transaction, ProducerCategory
-from .forms import AddCustomerForm, EditCustomerForm, AddEnergyForm, EditEnergyForm, AddProducerCategoryForm, EditProducerCategoryForm, AddTransactionForm, EditTransactionForm
+from .forms import AddCustomerForm,  EditCustomerForm, AddEnergyForm, EditEnergyForm, AddProducerCategoryForm, EditProducerCategoryForm, AddTransactionForm,  EditTransactionForm
 
 def admin_home(request):
     all_customer_count = Customer.objects.all().count()
@@ -66,7 +66,7 @@ def add_energy_save(request):
                 energy.save()
 
                 messages.success(request, "Energy Added Successfully!")
-                return redirect('add_energy')
+                return redirect('manage_energy')
             except Exception as e:
                 messages.error(request, f"Failed to Add Energy: {e}")
                 return redirect('add_energy')
@@ -142,7 +142,7 @@ def add_producer_category_save(request):
                 category.save()
 
                 messages.success(request, "Producer Category Added Successfully!")
-                return redirect('add_producer_category')
+                return redirect('manage_producer_category')
             except Exception as e:
                 messages.error(request, f"Failed to Add Producer Category: {e}")
                 return redirect('add_producer_category')
@@ -222,7 +222,7 @@ def add_transaction_save(request):
                 transaction.save()
 
                 messages.success(request, "Transaction Added Successfully!")
-                return redirect('add_transaction')
+                return redirect('manage_transaction')
             except Exception as e:
                 messages.error(request, f"Failed to Add Transaction: {e}")
                 return redirect('add_transaction')
@@ -339,6 +339,75 @@ def delete_customer(request, customer_id):
     except Exception as e:
         messages.error(request, f"Failed to Delete Customer: {e}")
     return redirect('manage_customer')
+
+
+
+
+def manage_producer(request):
+    producers = Producer.objects.all()
+    context = {
+        "producers": producers
+    }
+    return render(request, 'hod_template/manage_producer_template.html', context)
+
+def add_producer(request):
+    form = AddProducerForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'hod_template/add_producer_template.html', context)
+
+def add_producer_save(request):
+    if request.method != "POST":
+        messages.error(request, "Invalid Method")
+        return redirect('add_producer')
+    else:
+        form = AddProducerForm(request.POST)
+
+        if form.is_valid():
+            company = form.cleaned_data['company']
+            category = form.cleaned_data['category']
+
+            try:
+                producer = Producer(
+                    company=company,
+                    category=category
+                )
+                producer.save()
+
+                messages.success(request, "Producer Added Successfully!")
+                return redirect('add_producer')
+            except Exception as e:
+                messages.error(request, f"Failed to Add Producer: {e}")
+                return redirect('add_producer')
+        else:
+            messages.error(request, "Form is not valid")
+            return redirect('add_producer')
+
+def edit_producer(request, producer_id):
+    producer = get_object_or_404(Producer, id=producer_id)
+    form = EditProducerForm(instance=producer)
+    context = {
+        "form": form,
+        "id": producer_id,
+    }
+    return render(request, "hod_template/edit_producer_template.html", context)
+
+def edit_producer_save(request):
+    if request.method != "POST":
+        return HttpResponse("Invalid Method!")
+    else:
+        producer_id = request.POST.get('producer_id')
+        producer = get_object_or_404(Producer, id=producer_id)
+
+        form = EditProducerForm(request.POST, instance=producer)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Producer Updated Successfully!")
+            return redirect('/edit-producer/'+str(producer_id))
+        else:
+            messages.error(request, "Form is not valid")
+            return redirect('/edit-producer/'+str(producer_id))
 
 
 @csrf_exempt

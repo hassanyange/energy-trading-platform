@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.models import Customer, Company, ProducerCategory, Producer, Energy, Transaction
+from main.models import Customer, Company, ProducerCategory,  Energy, Transaction
 from django.contrib.auth.models import User
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -17,16 +17,9 @@ class ProducerCategorySerializer(serializers.ModelSerializer):
         model = ProducerCategory
         fields = ['name', 'description', 'created_at', 'updated_at']
 
-class ProducerSerializer(serializers.ModelSerializer):
-    company = CompanySerializer()
-    category = ProducerCategorySerializer()
-
-    class Meta:
-        model = Producer
-        fields = ['company', 'category', 'created_at', 'updated_at']
 
 class EnergySerializer(serializers.ModelSerializer):
-    producer = ProducerSerializer()
+    producer = ProducerCategorySerializer()
 
     class Meta:
         model = Energy
