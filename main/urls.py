@@ -50,10 +50,5 @@ urlpatterns = [
     path('delete_transaction/<int:transaction_id>/', HodViews.delete_transaction, name="delete_transaction"),
 
 
-    # Producer Management
-    path('manage-producer/', HodViews.manage_producer, name='manage_producer'),
-    path('add-producer/', HodViews.add_producer, name='add_producer'),
-    path('add-producer-save/', HodViews.add_producer_save, name='add_producer_save'),
-    path('edit-producer/<int:producer_id>/', HodViews.edit_producer, name='edit_producer'),
-    path('edit-producer-save/', HodViews.edit_producer_save, name='edit_producer_save'),
+  
 ]

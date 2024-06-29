@@ -282,13 +282,13 @@ def add_customer_save(request):
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
-            user_name = form.cleaned_data['user_name']
+            username = form.cleaned_data['username']
             email = form.cleaned_data['email']
  
 
             try:
                 user = CustomUser.objects.create_user(
-                    user_name=user_name,
+                    username=username,
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
@@ -343,71 +343,6 @@ def delete_customer(request, customer_id):
 
 
 
-def manage_producer(request):
-    producers = Producer.objects.all()
-    context = {
-        "producers": producers
-    }
-    return render(request, 'hod_template/manage_producer_template.html', context)
-
-def add_producer(request):
-    form = AddProducerForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'hod_template/add_producer_template.html', context)
-
-def add_producer_save(request):
-    if request.method != "POST":
-        messages.error(request, "Invalid Method")
-        return redirect('add_producer')
-    else:
-        form = AddProducerForm(request.POST)
-
-        if form.is_valid():
-            company = form.cleaned_data['company']
-            category = form.cleaned_data['category']
-
-            try:
-                producer = Producer(
-                    company=company,
-                    category=category
-                )
-                producer.save()
-
-                messages.success(request, "Producer Added Successfully!")
-                return redirect('add_producer')
-            except Exception as e:
-                messages.error(request, f"Failed to Add Producer: {e}")
-                return redirect('add_producer')
-        else:
-            messages.error(request, "Form is not valid")
-            return redirect('add_producer')
-
-def edit_producer(request, producer_id):
-    producer = get_object_or_404(Producer, id=producer_id)
-    form = EditProducerForm(instance=producer)
-    context = {
-        "form": form,
-        "id": producer_id,
-    }
-    return render(request, "hod_template/edit_producer_template.html", context)
-
-def edit_producer_save(request):
-    if request.method != "POST":
-        return HttpResponse("Invalid Method!")
-    else:
-        producer_id = request.POST.get('producer_id')
-        producer = get_object_or_404(Producer, id=producer_id)
-
-        form = EditProducerForm(request.POST, instance=producer)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Producer Updated Successfully!")
-            return redirect('/edit-producer/'+str(producer_id))
-        else:
-            messages.error(request, "Form is not valid")
-            return redirect('/edit-producer/'+str(producer_id))
 
 
 @csrf_exempt

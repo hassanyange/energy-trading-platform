@@ -9,62 +9,64 @@
 {% load static %}
 
 
-  <!-- Main content -->
-  <section class="content">
+<!-- Main content -->
+<section class="content">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">All Energies</h3>
-              <div class="card-tools">
-                <a href="{% url 'add_energy' %}" class="btn btn-primary">Add New Energy</a>
-              </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Energies</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'add_energy' %}" class="btn btn-primary">Add New Energy</a>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Capacity</th>
+                                        <th>Available Units</th>
+                                        <th>Cost per Unit</th>
+                                        <th>Producer</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for energy in energies %}
+                                    <tr>
+                                        <td>{{ energy.type }}</td>
+                                        <td>{{ energy.capacity }}</td>
+                                        <td>{{ energy.available_units }}</td>
+                                        <td>{{ energy.cost_per_unit }}</td>
+                                        <td>{{ energy.producer }}</td>
+                                        <td>
+                                            <a href="{% url 'edit_energy' energy.id %}" class="btn btn-info btn-sm">Edit</a>
+                                            <a href="{% url 'delete_energy' energy.id %}" class="btn btn-danger btn-sm">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6">No energies found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
             </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-              <table class="table table-bordered table-striped">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Capacity</th>
-                    <th>Available Units</th>
-                    <th>Cost per Unit</th>
-                    <th>Producer</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for energy in energies %}
-                  <tr>
-                    <td>{{ energy.type }}</td>
-                    <td>{{ energy.capacity }}</td>
-                    <td>{{ energy.available_units }}</td>
-                    <td>{{ energy.cost_per_unit }}</td>
-                    <td>{{ energy.producer }}</td>
-                    <td>
-                      <a href="{% url 'edit_energy' energy.id %}" class="btn btn-info btn-sm">Edit</a>
-                      <a href="{% url 'delete_energy' energy.id %}" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
-                  </tr>
-                  {% empty %}
-                  <tr>
-                    <td colspan="6">No energies found.</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
+            <!-- /.col -->
         </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
+        <!-- /.row -->
     </div><!-- /.container-fluid -->
-  </section>
-  <!-- /.content -->
+</section>
+<!-- /.content -->
 
 
 {% endblock main_content %}

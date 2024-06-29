@@ -6,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
-from main.models import Customer, Company, ProducerCategory, Energy, Transaction
-from .serializers import CustomerSerializer, CompanySerializer, ProducerCategorySerializer, EnergySerializer, TransactionSerializer
+from main.models import Customer,  ProducerCategory, Energy, Transaction
+from .serializers import CustomerSerializer,  ProducerCategorySerializer, EnergySerializer, TransactionSerializer
 
 
 User = get_user_model()

@@ -15,22 +15,18 @@ class AdminHOD(models.Model):
 class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    user_name = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
     email = models.EmailField()
     phone_number = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Company(models.Model):
-    name = models.CharField(max_length=255)
-    address = models.TextField()
-    contact_email = models.EmailField()
-    contact_phone = models.CharField(max_length=15)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 class ProducerCategory(models.Model):
     name = models.CharField(max_length=255)
+    address = models.TextField(default='Dar es salaam')
+    contact_email = models.EmailField(default="example@example.com")
+    contact_phone = models.CharField(max_length=15, default= '074xxxxxxx')
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,44 +1,62 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Add energy
+    Add Energy
 {% endblock page_title %}
 
 {% block main_content %}
 {% load static %}
 
-
-
-  <!-- Main content -->
-  <section class="content">
+<section class="content">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">Energy Details</h3>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Energy Details</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" action="{% url 'add_energy_save' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="id_type">Energy Type</label>
+                                <input type="text" class="form-control" id="id_type" name="type" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_capacity">Capacity</label>
+                                <input type="number" class="form-control" id="id_capacity" name="capacity" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_available_units">Available Units</label>
+                                <input type="number" class="form-control" id="id_available_units" name="available_units" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_cost_per_unit">Cost Per Unit</label>
+                                <input type="number" class="form-control" id="id_cost_per_unit" name="cost_per_unit" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_producer">Producer</label>
+                                <select class="form-control" id="id_producer" name="producer" required>
+                                    {% for producer in producers %}
+                                        <option value="{{ producer.id }}">{{ producer.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer text-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card -->
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form role="form" action="{% url 'add_energy_save' %}" method="POST">
-              {% csrf_token %}
-              <div class="card-body">
-                {{ form.as_p }}
-              </div>
-              <!-- /.card-body -->
-
-              <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </form>
-          </div>
-          <!-- /.card -->
+            <!-- /.col -->
         </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
+        <!-- /.row -->
     </div><!-- /.container-fluid -->
-  </section>
-  <!-- /.content -->
-
+</section>
 {% endblock main_content %}

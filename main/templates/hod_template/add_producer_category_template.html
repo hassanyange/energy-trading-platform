@@ -7,34 +7,49 @@
 {% block main_content %}
 {% load static %}
 
-  <section class="content-header">
+<section class="content">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">Category Details</h3>
-            </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-            <form role="form" action="{% url 'add_producer_category_save' %}" method="POST">
-              {% csrf_token %}
-              <div class="card-body">
-                {{ form.as_p }}
-              </div>
-              <!-- /.card-body -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Category Details</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form role="form" action="{% url 'add_producer_category_save' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="id_name">Category Name</label>
+                                <input type="text" class="form-control" id="id_name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_description">Category Description</label>
+                                <textarea class="form-control" id="id_description" name="description" rows="4" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_contact_email">Contact Email</label>
+                                <input type="email" class="form-control" id="id_contact_email" name="contact_email" value="{{ form.contact_email.value|default_if_none:"example@example.com" }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_contact_phone">Contact Phone</label>
+                                <input type="text" class="form-control" id="id_contact_phone" name="contact_phone" value="{{ form.contact_phone.value|default_if_none:"074xxxxxxx" }}" required>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
 
-              <div class="card-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </form>
-          </div>
-          <!-- /.card -->
+                        <div class="card-footer text-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
         </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
+        <!-- /.row -->
     </div><!-- /.container-fluid -->
-  </section>
+</section>
 
 {% endblock main_content %}
