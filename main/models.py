@@ -13,6 +13,7 @@ class AdminHOD(models.Model):
 
 
 class Customer(models.Model):
+    user = models.OneToOneField(CustomUser, null=True, blank=True, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100)
@@ -22,11 +23,12 @@ class Customer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+
 class ProducerCategory(models.Model):
     name = models.CharField(max_length=255)
-    address = models.TextField(default='Dar es salaam')
+    address = models.TextField(default='Dar es Salaam')
     contact_email = models.EmailField(default="example@example.com")
-    contact_phone = models.CharField(max_length=15, default= '074xxxxxxx')
+    contact_phone = models.CharField(max_length=15, default='074xxxxxxx')
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -40,6 +42,7 @@ class Energy(models.Model):
     cost_per_unit = models.DecimalField(max_digits=10, decimal_places=2)  # in bitcoins
     timestamp = models.DateTimeField(auto_now_add=True)
 
+
 class Transaction(models.Model):
     consumer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 2})
     energy = models.ForeignKey(Energy, on_delete=models.CASCADE)
@@ -47,3 +50,6 @@ class Transaction(models.Model):
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)  # in bitcoins
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        self.total_cost = self.requested_units * self.energy.cost_per_unit
+        super().save(*args, **kwargs)
