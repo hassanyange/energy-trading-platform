@@ -1,23 +1,12 @@
 from rest_framework import serializers
 from main.models import Customer, ProducerCategory, Energy, Transaction
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 CustomUser = get_user_model()
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+class CustomLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
-
-    def validate(self, attrs):
-        email = attrs.get('email')
-        password = attrs.get('password')
-
-        user = CustomUser.objects.filter(email=email).first()
-        if user is not None and user.check_password(password) and user.is_active:
-            attrs['username'] = user.username
-            return super().validate(attrs)
-        else:
-            raise serializers.ValidationError('No active account found with the given credentials')
+    password = serializers.CharField(write_only=True)
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
