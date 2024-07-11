@@ -4,22 +4,22 @@ from main.models import CustomUser, Customer, Energy, Transaction, ProducerCateg
 class AddCustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ('first_name', 'last_name', 'username',  'email', 'phone_number')
+        fields = ('first_name', 'last_name', 'username',  'email', 'phone_number', 'postal_code')
 
 class EditCustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ('first_name', 'last_name', 'username', 'email', 'phone_number')
+        fields = ('first_name', 'last_name', 'username', 'email', 'phone_number', 'postal_code')
 
 class AddEnergyForm(forms.ModelForm):
     class Meta:
         model = Energy
-        fields = ('type', 'capacity', 'available_units', 'cost_per_unit', 'producer')
+        fields = ( 'capacity', 'available_units', 'cost_per_unit', 'producer')
 
 class EditEnergyForm(forms.ModelForm):
     class Meta:
         model = Energy
-        fields = ('type', 'capacity', 'available_units', 'cost_per_unit', 'producer')
+        fields = ('capacity', 'available_units', 'cost_per_unit', 'producer')
 
 class AddProducerCategoryForm(forms.ModelForm):
     class Meta:

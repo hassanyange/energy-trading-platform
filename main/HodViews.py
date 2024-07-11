@@ -36,8 +36,10 @@ def manage_energy(request):
 
 def add_energy(request):
     form = AddEnergyForm()
+    producers = ProducerCategory.objects.all()
     context = {
-        'form': form
+        'form': form,
+        'producers': producers,
     }
     return render(request, 'hod_template/add_energy_template.html', context)
 
@@ -49,7 +51,6 @@ def add_energy_save(request):
         form = AddEnergyForm(request.POST)
 
         if form.is_valid():
-            type = form.cleaned_data['type']
             capacity = form.cleaned_data['capacity']
             available_units = form.cleaned_data['available_units']
             cost_per_unit = form.cleaned_data['cost_per_unit']
@@ -57,7 +58,6 @@ def add_energy_save(request):
 
             try:
                 energy = Energy(
-                    type=type,
                     capacity=capacity,
                     available_units=available_units,
                     cost_per_unit=cost_per_unit,

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
-    user_type_data = ((1, "HOD"), (2, "Staff"), (3, "Student"))
+    user_type_data = ((1, "HOD"), (2, "Customer"), (3, "Student"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
     
 
@@ -19,9 +19,17 @@ class Customer(models.Model):
     username = models.CharField(max_length=100)
     email = models.EmailField()
     phone_number = models.CharField(max_length=15)
+    postal_code = models.CharField(max_length = 15, default=11442)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        self.user.user_type = 2  # Set user_type to 2 for customers
+        self.user.save()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.username
 
 
 class ProducerCategory(models.Model):
@@ -33,10 +41,12 @@ class ProducerCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Energy(models.Model):
     producer = models.ForeignKey(ProducerCategory, on_delete=models.CASCADE)
-    type = models.CharField(max_length=50)  # e.g., Solar, Wind, Biomass
     capacity = models.FloatField()  # in kWh
     available_units = models.FloatField()  # in kWh
     cost_per_unit = models.DecimalField(max_digits=10, decimal_places=2)  # in bitcoins

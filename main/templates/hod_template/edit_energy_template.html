@@ -20,10 +20,7 @@
                         {% csrf_token %}
                         <input type="hidden" name="energy_id" value="{{ id }}">
                         <div class="card-body">
-                            <div class="form-group">
-                                <label for="id_type">Energy Type</label>
-                                <input type="text" class="form-control" id="id_type" name="type" value="{{ form.type.value }}" required>
-                            </div>
+                          
                             <div class="form-group">
                                 <label for="id_capacity">Capacity</label>
                                 <input type="number" class="form-control" id="id_capacity" name="capacity" value="{{ form.capacity.value }}" required>
@@ -37,7 +34,7 @@
                                 <input type="number" class="form-control" id="id_cost_per_unit" name="cost_per_unit" value="{{ form.cost_per_unit.value }}" required>
                             </div>
                             <div class="form-group">
-                                <label for="id_producer">Producer</label>
+                                <label for="id_producer">Energy Category</label>
                                 <select class="form-control" id="id_producer" name="producer" required>
                                     {% for producer in producers %}
                                         <option value="{{ producer.id }}" {% if producer.id == form.producer.value %}selected{% endif %}>{{ producer.name }}</option>
