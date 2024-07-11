@@ -9,6 +9,10 @@ from .serializers import CustomLoginSerializer, CustomerSerializer, ProducerCate
 
 CustomUser = get_user_model()
 
+
+
+
+
 class RegisterView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -81,7 +85,7 @@ class CustomLoginView(APIView):
 class UserDetailView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
@@ -91,7 +95,7 @@ class UserDetailView(generics.RetrieveAPIView):
 class CustomerDetailView(generics.RetrieveUpdateAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user.customer
