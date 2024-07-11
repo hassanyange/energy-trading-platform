@@ -392,3 +392,80 @@ def admin_profile_update(request):
         except:
             messages.error(request, "Failed to Update Profile")
             return redirect('admin_profile')
+
+
+
+#  PAYPAL
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt, get_token
+import paypalrestsdk
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
+
+# Initialize PayPal SDK
+paypalrestsdk.configure({
+    "mode": "sandbox",  # Sandbox or live
+    "client_id": 'ASnwQzBkPndV_fr93YE5-GpxKI5YHaZPcSE4Pgtokd1Xpqi8tuOuAIHjQqI4ErTuoiGXo8rDQvzMTA0g',
+    "client_secret": 'EPGhkm_WFs3-WdBFRiusdInNVSBsZ_nDHle6CHK2BCpIpHsq4r4SkkZ9mXcO8bNXOGAJGZuu47UBbH5q'
+})
+
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    csrf_token = get_token(request)
+    return JsonResponse({'csrfToken': csrf_token})
+
+@csrf_exempt
+def create_payment(request):
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        # "redirect_urls": {
+        #     "return_url": "http://127.0.0.1:8000/pdf_appload/payment/execute",
+        #     "cancel_url": "http://127.0.0.1:8000/payment/cancel"
+        # },
+        "transactions": [{
+            "amount": {
+                "total": "10.00",
+                "currency": "USD"
+            },
+            "description": "This is the payment transaction description."
+        }]
+    })
+
+    if payment.create():
+        for link in payment.links:
+            if link.rel == "approval_url":
+                approval_url = str(link.href)
+                return JsonResponse({"approval_url": approval_url})
+    else:
+        return JsonResponse({"error": payment.error}, status=500)
+
+@csrf_exempt
+def execute_payment(request):
+    payment_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+
+    logger.info(f"Executing payment with ID: {payment_id} and Payer ID: {payer_id}")
+
+    if not payment_id or not payer_id:
+        return JsonResponse({"error": "Missing paymentId or PayerID"}, status=400)
+
+    try:
+        payment = paypalrestsdk.Payment.find(payment_id)
+        if payment.execute({"payer_id": payer_id}):
+            logger.info("Payment executed successfully.")
+            return JsonResponse({"status": "Payment successful"})
+        else:
+            logger.error(f"Payment execution failed: {payment.error}")
+            return JsonResponse({"error": payment.error}, status=500)
+    except paypalrestsdk.exceptions.ResourceNotFound as e:
+        logger.error(f"Resource not found: {str(e)}")
+        return JsonResponse({"error": "Payment not found"}, status=404)
+    except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
+        return JsonResponse({"error": str(e)}, status=500)

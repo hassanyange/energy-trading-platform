@@ -50,5 +50,8 @@ urlpatterns = [
     path('delete_transaction/<int:transaction_id>/', HodViews.delete_transaction, name="delete_transaction"),
 
 
+    path('get_csrf_token/', HodViews.get_csrf_token, name='get_csrf_token'),
+    path('payment/create', HodViews.create_payment, name='create_payment'),
+    path('payment/execute', HodViews.execute_payment, name='execute_payment'),
   
 ]

@@ -30,6 +30,12 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
+
+#paypal settings
+PAYPAL_CLIENT_ID = 'ASnwQzBkPndV_fr93YE5-GpxKI5YHaZPcSE4Pgtokd1Xpqi8tuOuAIHjQqI4ErTuoiGXo8rDQvzMTA0g'
+PAYPAL_CLIENT_SECRET = 'EPGhkm_WFs3-WdBFRiusdInNVSBsZ_nDHle6CHK2BCpIpHsq4r4SkkZ9mXcO8bNXOGAJGZuu47UBbH5q'
+PAYPAL_MODE = 'sandbox'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,6 +61,11 @@ REST_FRAMEWORK = {
     #  'DEFAULT_PERMISSION_CLASSES': (
     #     'rest_framework.permissions.IsAuthenticated',
     # ),
+
+       'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
 }
 
 SIMPLE_JWT = {
