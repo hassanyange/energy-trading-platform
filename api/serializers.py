@@ -1,8 +1,15 @@
 from rest_framework import serializers
 from main.models import Customer, ProducerCategory, Energy, Transaction
 from django.contrib.auth import get_user_model
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
+
+from rest_framework import generics
 
 CustomUser = get_user_model()
+
+
+
 
 class CustomLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
