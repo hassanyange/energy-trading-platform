@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
     user_type_data = ((1, "HOD"), (2, "Customer"), (3, "Student"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
-    
+    phone_number = models.CharField(max_length=15, default="07xxxxxx")
 
 class AdminHOD(models.Model):
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
