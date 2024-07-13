@@ -424,10 +424,12 @@ def create_payment(request):
         "payer": {
             "payment_method": "paypal"
         },
-        # "redirect_urls": {
-        #     "return_url": "http://127.0.0.1:8000/pdf_appload/payment/execute",
-        #     "cancel_url": "http://127.0.0.1:8000/payment/cancel"
-        # },
+
+        "redirect_urls": {
+            "return_url": "https://energy-trading-platform.onrender.com/payment/execute",
+            "cancel_url": "https://energy-trading-platform.onrender.com/payment/cancel"
+        },
+
         "transactions": [{
             "amount": {
                 "total": "10.00",

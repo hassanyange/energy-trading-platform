@@ -41,6 +41,8 @@ PAYPAL_CLIENT_ID = 'ASnwQzBkPndV_fr93YE5-GpxKI5YHaZPcSE4Pgtokd1Xpqi8tuOuAIHjQqI4
 PAYPAL_CLIENT_SECRET = 'EPGhkm_WFs3-WdBFRiusdInNVSBsZ_nDHle6CHK2BCpIpHsq4r4SkkZ9mXcO8bNXOGAJGZuu47UBbH5q'
 PAYPAL_MODE = 'sandbox'
 
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
