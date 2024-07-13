@@ -12,18 +12,17 @@ CustomUser = get_user_model()
 
 
 
-
 class RegisterView(APIView):
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        email = request.data.get('email')
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
+        username = request.data.get('username')
+        email = request.data.get('email')
         phone_number = request.data.get('phone_number')
         postal_code = request.data.get('postal_code')
+        password = request.data.get('password')
         
-        if not (username and password and email and first_name and last_name and phone_number and postal_code):
+        if not (first_name and last_name and username and email and phone_number and postal_code and password):
             return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -33,8 +32,6 @@ class RegisterView(APIView):
             return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 CustomUser = get_user_model()
