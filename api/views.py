@@ -10,10 +10,12 @@ from .serializers import CustomLoginSerializer, CustomerSerializer, ProducerCate
 CustomUser = get_user_model()
 
 
-
+import logging
 
 class RegisterView(APIView):
     def post(self, request):
+        logging.debug('Request data: %s', request.data)
+        
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
         username = request.data.get('username')
@@ -21,18 +23,20 @@ class RegisterView(APIView):
         phone_number = request.data.get('phone_number')
         postal_code = request.data.get('postal_code')
         password = request.data.get('password')
-        
+
         if not (first_name and last_name and username and email and phone_number and postal_code and password):
+            logging.error('Validation error: missing fields')
             return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
             customer = Customer.objects.create(
                 user=user, first_name=first_name, last_name=last_name, username=username, email=email, phone_number=phone_number, postal_code=postal_code)
+            logging.info('User created successfully: %s', username)
             return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
         except Exception as e:
+            logging.error('Error creating user: %s', str(e))
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 CustomUser = get_user_model()
 
