@@ -25,6 +25,10 @@ SECRET_KEY = 'django-insecure-v8#$%s^8f(y(-(iyct0wj3uscds&r@t9k-xjekz4mtt*6+wkaf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+# settings.py
+
+
 ALLOWED_HOSTS = ['*']
 
 
@@ -46,6 +50,7 @@ INSTALLED_APPS = [
     'main',
     'rest_framework',
     'rest_framework_simplejwt',
+     'corsheaders',
 
 ]
 
@@ -72,6 +77,20 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+
+# settings.py
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = True
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = ['https://energy-trading-platform.onrender.com']
+
+
+
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,6 +99,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'energy.urls'
