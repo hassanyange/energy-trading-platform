@@ -395,17 +395,16 @@ def admin_profile_update(request):
 
 
 
-#  PAYPAL
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt, get_token
 import paypalrestsdk
 import logging
 
-# Configure logging
+
 logger = logging.getLogger(__name__)
 
-# Initialize PayPal SDK
+
 paypalrestsdk.configure({
     "mode": "sandbox",  # Sandbox or live
     "client_id": 'ASnwQzBkPndV_fr93YE5-GpxKI5YHaZPcSE4Pgtokd1Xpqi8tuOuAIHjQqI4ErTuoiGXo8rDQvzMTA0g',
