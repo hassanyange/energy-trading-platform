@@ -25,12 +25,14 @@ class ProducerCategorySerializer(serializers.ModelSerializer):
         model = ProducerCategory
         fields = ['name', 'address', 'contact_email', 'contact_phone', 'description', 'created_at', 'updated_at']
 
+
 class EnergySerializer(serializers.ModelSerializer):
     producer = ProducerCategorySerializer()
 
     class Meta:
         model = Energy
-        fields = ['producer', 'capacity', 'available_units', 'cost_per_unit', 'timestamp']
+        fields = ['cost_per_unit', 'available_units', 'producer']
+
 
 class TransactionSerializer(serializers.ModelSerializer):
     energy = EnergySerializer()
