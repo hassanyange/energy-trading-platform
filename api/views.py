@@ -109,7 +109,7 @@ class ProducerCategoryListView(generics.ListCreateAPIView):
 class EnergyListView(generics.ListCreateAPIView):
     queryset = Energy.objects.all()
     serializer_class = EnergySerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 class TransactionListView(generics.ListCreateAPIView):
     queryset = Transaction.objects.all()
