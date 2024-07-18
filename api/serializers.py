@@ -35,11 +35,9 @@ class EnergySerializer(serializers.ModelSerializer):
 
     def get_producer(self, obj):
         return obj.producer.name  # Only return the name field
-
+    
 
 class TransactionSerializer(serializers.ModelSerializer):
-    energy = EnergySerializer()
-
     class Meta:
         model = Transaction
-        fields = ['consumer', 'energy', 'requested_units', 'total_cost', 'timestamp']
+        fields = ['Mobile_network', 'phone_number', 'total_cost']

@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Manage Transaction
+    Manage Transactions
 {% endblock page_title %}
 
 {% block main_content %}
@@ -16,9 +16,10 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">All Transactions</h3>
-                        <div class="card-tools">
+                        <!-- If needed, you can add a link to add a new transaction -->
+                        <!-- <div class="card-tools">
                             <a href="{% url 'add_transaction' %}" class="btn btn-primary">Add New Transaction</a>
-                        </div>
+                        </div> -->
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -27,10 +28,9 @@
                                 <thead>
                                     <tr>
                                         <th>Transaction ID</th>
-                                        <th>Customer</th>
-                                        <th>Energy</th>
-                                        <th>Units</th>
-                                        <th>Total Cost</th>
+                                        <th>Mobile Network</th>
+                                        <th>Phone Number</th>
+                                        <th>Total Cost (Tshs)</th>
                                         <th>Date</th>
                                         <th>Actions</th>
                                     </tr>
@@ -39,11 +39,10 @@
                                     {% for transaction in transactions %}
                                     <tr>
                                         <td>{{ transaction.id }}</td>
-                                        <td>{{ transaction.customer.name }}</td>
-                                        <td>{{ transaction.energy.type }}</td>
-                                        <td>{{ transaction.units }}</td>
+                                        <td>{{ transaction.Mobile_network }}</td>
+                                        <td>{{ transaction.phone_number }}</td>
                                         <td>{{ transaction.total_cost }}</td>
-                                        <td>{{ transaction.date }}</td>
+                                        <td>{{ transaction.timestamp }}</td>
                                         <td>
                                             <a href="{% url 'edit_transaction' transaction.id %}" class="btn btn-info btn-sm">Edit</a>
                                             <a href="{% url 'delete_transaction' transaction.id %}" class="btn btn-danger btn-sm">Delete</a>
@@ -51,7 +50,7 @@
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                        <td colspan="7">No transactions found.</td>
+                                        <td colspan="6">No transactions found.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>

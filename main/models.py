@@ -54,9 +54,8 @@ class Energy(models.Model):
 
 
 class Transaction(models.Model):
-    consumer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 2})
-    energy = models.ForeignKey(Energy, on_delete=models.CASCADE)
-    requested_units = models.IntegerField()  # in kWh
+    Mobile_network = models.CharField(max_length=20, default='Airtel')
+    phone_number = models.BigIntegerField(default=7671192711)
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)  # in bitcoins
     timestamp = models.DateTimeField(auto_now_add=True)
 

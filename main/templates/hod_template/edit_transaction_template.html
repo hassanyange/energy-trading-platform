@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Edit Transaction | #ID : {{ course.id }}
+    Edit Transaction | #ID : {{ id }}
 {% endblock page_title %}
 
 {% load static %}
@@ -23,28 +23,16 @@
                         <input type="hidden" name="transaction_id" value="{{ id }}">
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="id_consumer">Consumer</label>
-                                <select class="form-control" id="id_consumer" name="consumer" required>
-                                    {% for consumer in consumers %}
-                                        <option value="{{ consumer.id }}" {% if consumer.id == form.consumer.value %}selected{% endif %}>{{ consumer.username }}</option>
-                                    {% endfor %}
-                                </select>
+                                <label for="id_mobile_network">Mobile Network</label>
+                                <input type="text" class="form-control" id="id_mobile_network" name="Mobile_network" value="{{ form.instance.Mobile_network }}" required>
                             </div>
                             <div class="form-group">
-                                <label for="id_energy">Energy</label>
-                                <select class="form-control" id="id_energy" name="energy" required>
-                                    {% for energy in energies %}
-                                        <option value="{{ energy.id }}" {% if energy.id == form.energy.value %}selected{% endif %}>{{ energy.type }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="id_units">Units</label>
-                                <input type="number" class="form-control" id="id_units" name="units" value="{{ form.units.value }}" required>
+                                <label for="id_phone_number">Phone Number</label>
+                                <input type="number" class="form-control" id="id_phone_number" name="phone_number" value="{{ form.instance.phone_number }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="id_total_cost">Total Cost</label>
-                                <input type="number" class="form-control" id="id_total_cost" name="total_cost" value="{{ form.total_cost.value }}" required>
+                                <input type="number" step="0.01" class="form-control" id="id_total_cost" name="total_cost" value="{{ form.instance.total_cost }}" required>
                             </div>
                         </div>
                         <!-- /.card-body -->

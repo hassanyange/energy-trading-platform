@@ -114,10 +114,9 @@ class EnergyListView(generics.ListCreateAPIView):
 class TransactionListView(generics.ListCreateAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
-    permission_classes = [IsAuthenticated]
+    
 
-    def perform_create(self, serializer):
-        serializer.save(consumer=self.request.user)
+  
 
 
 

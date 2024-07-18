@@ -35,10 +35,9 @@ class EditProducerCategoryForm(forms.ModelForm):
 class AddTransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ('consumer', 'energy', 'requested_units', 'total_cost')
+        fields = ('Mobile_network', 'phone_number', 'total_cost')
 
 class EditTransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ('consumer', 'energy', 'requested_units', 'total_cost')
-    
+        fields = ('Mobile_network', 'phone_number', 'total_cost')

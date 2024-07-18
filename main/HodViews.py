@@ -200,7 +200,7 @@ def manage_transaction(request):
 def add_transaction(request):
     form = AddTransactionForm()
     context = {
-        'form': form
+        'form': form,
     }
     return render(request, 'hod_template/add_transaction_template.html', context)
 
@@ -212,16 +212,17 @@ def add_transaction_save(request):
         form = AddTransactionForm(request.POST)
 
         if form.is_valid():
-            consumer = form.cleaned_data['consumer']
-            energy = form.cleaned_data['energy']
-            requested_units = form.cleaned_data['requested_units']
-            total_cost = form.cleaned_data['total_cost']
+            mobile_network = form.cleaned_data.get('Mobile_network', 'Airtel')
+            phone_number = form.cleaned_data.get('phone_number')
+            total_cost = form.cleaned_data.get('total_cost')
+
+            if phone_number == '':
+                phone_number = 0  # or handle as appropriate
 
             try:
                 transaction = Transaction(
-                    consumer=consumer,
-                    energy=energy,
-                    requested_units=requested_units,
+                    Mobile_network=mobile_network,
+                    phone_number=phone_number,
                     total_cost=total_cost
                 )
                 transaction.save()
@@ -234,15 +235,17 @@ def add_transaction_save(request):
         else:
             messages.error(request, "Form is not valid")
             return redirect('add_transaction')
+        
 
 def edit_transaction(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id)
     form = EditTransactionForm(instance=transaction)
     context = {
         "form": form,
-        "id": transaction_id,
+        "transaction_id": transaction_id,
     }
     return render(request, "hod_template/edit_transaction_template.html", context)
+
 
 def edit_transaction_save(request):
     if request.method != "POST":
@@ -253,6 +256,10 @@ def edit_transaction_save(request):
 
         form = EditTransactionForm(request.POST, instance=transaction)
         if form.is_valid():
+            phone_number = form.cleaned_data.get('phone_number')
+            if phone_number == '':
+                phone_number = 0  # or handle as appropriate
+
             form.save()
             messages.success(request, "Transaction Updated Successfully!")
             return redirect('/edit_transaction/'+str(transaction_id))
@@ -265,11 +272,10 @@ def delete_transaction(request, transaction_id):
     try:
         transaction.delete()
         messages.success(request, "Transaction Deleted Successfully.")
-        return redirect('manage_transaction')
     except Exception as e:
         messages.error(request, f"Failed to Delete Transaction: {e}")
-        return redirect('manage_transaction')
-
+    return redirect('manage_transaction')
+    
 def add_customer(request):
     form = AddCustomerForm()
     context = {
