@@ -27,6 +27,7 @@ def admin_home(request):
     }
     return render(request, "hod_template/home_content.html", context)
 
+
 def manage_energy(request):
     energies = Energy.objects.all()
     context = {
@@ -77,9 +78,11 @@ def add_energy_save(request):
 def edit_energy(request, energy_id):
     energy = get_object_or_404(Energy, id=energy_id)
     form = EditEnergyForm(instance=energy)
+    producers = ProducerCategory.objects.all()
     context = {
         "form": form,
         "id": energy_id,
+        "producers": producers,
     }
     return render(request, "hod_template/edit_energy_template.html", context)
 
@@ -117,7 +120,14 @@ def manage_producer_category(request):
     return render(request, 'hod_template/manage_producer_category_template.html', context)
 
 def add_producer_category(request):
-    form = AddProducerCategoryForm()
+    if request.method == "POST":
+        form = AddProducerCategoryForm(request.POST)
+    else:
+        form = AddProducerCategoryForm(initial={
+            'contact_email': 'example@example.com',
+            'contact_phone': '074xxxxxxx'
+        })
+
     context = {
         'form': form
     }
@@ -129,18 +139,9 @@ def add_producer_category_save(request):
         return redirect('add_producer_category')
     else:
         form = AddProducerCategoryForm(request.POST)
-
         if form.is_valid():
-            name = form.cleaned_data['name']
-            description = form.cleaned_data['description']
-
             try:
-                category = ProducerCategory(
-                    name=name,
-                    description=description
-                )
-                category.save()
-
+                form.save()
                 messages.success(request, "Producer Category Added Successfully!")
                 return redirect('manage_producer_category')
             except Exception as e:
@@ -150,14 +151,17 @@ def add_producer_category_save(request):
             messages.error(request, "Form is not valid")
             return redirect('add_producer_category')
 
+
 def edit_producer_category(request, category_id):
     category = get_object_or_404(ProducerCategory, id=category_id)
-    form = EditProducerCategoryForm(instance=category)
+    form = AddProducerCategoryForm(instance=category)
     context = {
         "form": form,
+        "category": category,  # Pass the category object to the template
         "id": category_id,
     }
     return render(request, "hod_template/edit_producer_category_template.html", context)
+
 
 def edit_producer_category_save(request):
     if request.method != "POST":
@@ -165,8 +169,7 @@ def edit_producer_category_save(request):
     else:
         category_id = request.POST.get('category_id')
         category = get_object_or_404(ProducerCategory, id=category_id)
-
-        form = EditProducerCategoryForm(request.POST, instance=category)
+        form = AddProducerCategoryForm(request.POST, instance=category)
         if form.is_valid():
             form.save()
             messages.success(request, "Producer Category Updated Successfully!")
@@ -174,6 +177,8 @@ def edit_producer_category_save(request):
         else:
             messages.error(request, "Form is not valid")
             return redirect('/edit_producer_category/'+str(category_id))
+        
+
 
 def delete_producer_category(request, category_id):
     category = get_object_or_404(ProducerCategory, id=category_id)

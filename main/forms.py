@@ -26,12 +26,7 @@ class AddProducerCategoryForm(forms.ModelForm):
         model = ProducerCategory
         fields = ('name', 'description', 'contact_email', 'contact_phone')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Set default values for initial display
-        self.fields['contact_email'].initial = 'example@example.com'
-        self.fields['contact_phone'].initial = '074xxxxxxx'
-
+ 
 class EditProducerCategoryForm(forms.ModelForm):
     class Meta:
         model = ProducerCategory

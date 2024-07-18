@@ -56,10 +56,8 @@ class Energy(models.Model):
 class Transaction(models.Model):
     consumer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, limit_choices_to={'user_type': 2})
     energy = models.ForeignKey(Energy, on_delete=models.CASCADE)
-    requested_units = models.FloatField()  # in kWh
+    requested_units = models.IntegerField()  # in kWh
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)  # in bitcoins
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        self.total_cost = self.requested_units * self.energy.cost_per_unit
-        super().save(*args, **kwargs)
+    
